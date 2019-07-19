@@ -8,6 +8,12 @@ function sleep(ms) {
   })
 }
 
+/**
+ * 
+ * @param {*} array 等待排序的数组 
+ * @param {*} source 有顺序的以此为标准的数组 
+ * @param {assign = false, arrayKey, sourceKey, null=false} option 
+ */
 function sequence(array, source, option = {}) {
   if (!Array.isArray(array)) throw '第一参数必须为数组!!!';
   if (!Array.isArray(source)) throw '第二参数必须为数组!!!';
@@ -24,32 +30,33 @@ function sequence(array, source, option = {}) {
   };
   if (isObj === undefined) throw '第二参数必须为字符串数组、数字数组或者对象数组!!!';
 
-  let { assign = false, key, null: _null } = option;
-  if (key === undefined) {
+  let { assign = false, arrayKey, sourceKey, null: _null } = option;
+  if (arrayKey === undefined) {
     for (let item of array) {
       if (typeof item === 'object' && item !== null) {
         if (item.id !== undefined) {
-          key = 'id';
+          arrayKey = 'id';
           break;
         };
         if (item._id !== undefined) {
-          key = '_id';
+          arrayKey = '_id';
           break
         }
       }
     }
   };
-  if (key === undefined) throw '请指定key值';
+  if (arrayKey === undefined) throw '请指定arrayKey值';
+  if (sourceKey === undefined) sourceKey = arrayKey;
 
   for (let item of array) {
     if (typeof item === 'object' && item !== null) {
-      cache[item[key]] = item;
+      cache[item[arrayKey]] = item;
     }
   };
 
   if (isObj) {
     for (let item of source) {
-      const obj = cache[item[key]];
+      const obj = cache[item[sourceKey]];
       if (obj === undefined || obj === null) {
         if (_null) result.push(null);
       } else {
@@ -70,6 +77,6 @@ function sequence(array, source, option = {}) {
       }
     }
   }
-  
+
   return result;
 }
