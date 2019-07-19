@@ -58,7 +58,11 @@ function sequence(array, source, option = {}) {
     for (let item of source) {
       const obj = cache[item[sourceKey]];
       if (obj === undefined || obj === null) {
-        if (_null) result.push(null);
+        if (_null) {
+          result.push(null);
+        } else if (assign) {
+          result.push(item);
+        }
       } else {
         if (assign) {
           result.push(Object.assign(item, obj));
